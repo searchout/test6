@@ -1,27 +1,23 @@
-<?
-// This is a template for a PHP scraper on morph.io (https://morph.io)
-// including some code snippets below that you should find helpful
+<?php
+// A scraper for airline information from PHL.org
 
-// require 'scraperwiki.php';
-// require 'scraperwiki/simple_html_dom.php';
-//
-// // Read in a page
-// $html = scraperwiki::scrape("http://foo.com");
-//
-// // Find something on the page using css selectors
-// $dom = new simple_html_dom();
-// $dom->load($html);
-// print_r($dom->find("table.list"));
-//
-// // Write out to the sqlite database using scraperwiki library
-// scraperwiki::save_sqlite(array('name'), array('name' => 'susan', 'occupation' => 'software developer'));
-//
-// // An arbitrary query against the database
-// scraperwiki::select("* from data where 'name'='peter'")
+require 'scraperwiki/simple_html_dom.php'; 
+$html_content = scraperwiki::scrape("http://www.hm.com/gb/subdepartment/sale?Nr=4294944772"); 
+$html = str_get_html($html_content);
 
-// You don't have to do things with the ScraperWiki library.
-// You can use whatever libraries you want: https://morph.io/documentation/php
-// All that matters is that your final data is written to an SQLite database
-// called "data.sqlite" in the current working directory which has at least a table
-// called "data".
+foreach ($html->find("dl.settings dd") as $el) {  }
+
+$record = array( 'hmcount1' => $el->innertext, 'hmcount2' => $el->innertext);
+//$record = ( 'hmcount1' => $el->innertext);
+
+print $record . "\n";
+ print json_encode($record) . "\n";
+
+//scraperwiki::save('hmcount1', $record); 
+//scraperwiki::sqliteexecute("delete from swdata"); 
+scraperwiki::sqliteexecute("drop table if exists swdata"); 
+//scraperwiki::sqliteexecute("drop table if exists hmcount_new"); 
+
+scraperwiki::save_var('last_page', (integer)$el->innertext); print scraperwiki::get_var('last_page');
+
 ?>
